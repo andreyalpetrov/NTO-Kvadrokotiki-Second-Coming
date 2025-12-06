@@ -31,7 +31,7 @@
 Для запуска скрипта прописываем.
 ```bash
 cd Desktop
-git clone https://github.com/DemianTarasov/NTO-KvadroKotiki.git
+git clone https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming.git
 ```
 Перейдя в проводник, перетащите все файлы из скаченной папки на рабочий стол.
 ## 2. Настройка симулятора. 
