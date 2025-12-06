@@ -7,9 +7,9 @@
 
 | Участник           | Роль                |
 | ------------------ | ------------------- |
-| • Андрей Петров    | инженер программист |
+| • Андрей Петров    | инженер техник |
 | • Даниил Белов     | инженер программист |
-| • Иван Александров | инженер техник      |
+| • Иван Александров | инженер программист |
 | • Дмитрий Ковалев  | 3D-моделлер         |
 
 ## 1. Установка виртуальной машины.
@@ -56,29 +56,15 @@ python3 launch.py
 ``` python
 
 from xml.etree import ElementTree as ET  # Импортируем модуль для работы с XML
-import git  # Импортируем библиотеку для работы с Git
-import shutil  # Импортируем модуль для работы с файлами и директориями
 
 # Определяем пути к различным ресурсам
-modelsPath = '/home/clover/catkin_ws/src/clover/clover_simulation/models/'
 arucoPath = '/home/clover/catkin_ws/src/clover/clover/launch/aruco.launch'
 cloverPath = '/home/clover/catkin_ws/src/clover/clover/launch/clover.launch'
 worldPath = '/home/clover/catkin_ws/src/clover/clover_simulation/resources/worlds/clover_aruco.world'
 mitPath = '/home/clover/catkin_ws/src/clover/aruco_pose/map/'
 
-# Попытка клонировать репозиторий с моделями из GitHub
-try:
-    git.Git(modelsPath).clone('https://github.com/bart02/dronepoint.git')  # Клонируем репозиторий
-    # Перемещаем модели в нужные директории
-    shutil.move(modelsPath + 'dronepoint/dronepoint_blue', modelsPath + 'dronepoint_blue')
-    shutil.move(modelsPath + 'dronepoint/dronepoint_green', modelsPath + 'dronepoint_green')
-    shutil.move(modelsPath + 'dronepoint/dronepoint_red', modelsPath + 'dronepoint_red')
-    shutil.move(modelsPath + 'dronepoint/dronepoint_yellow', modelsPath + 'dronepoint_yellow')
-except:
-    print('Models already exist')  # Если модели уже существуют, выводим сообщение
 
-# Попытка открыть и обработать файл мира (world)
-try:
+try: # Попытка открыть и обработать файл мира (world)
     root = ET.parse(worldPath)  # Парсим XML файл мира
     world = root.getroot()  # Получаем корневой элемент
     mit = world[0][2][0].text.split('_')  # Извлекаем текст и разбиваем его на части
@@ -127,9 +113,9 @@ root.write(cloverPath)  # Записываем изменения обратно
 С каждым запуском скрипт генерирует расположение врезок случайно. 
 
 Применение скрипта: 
-- Файл `houses.py` должен находится на рабочем столе (см. пункт 1 Установка виртуальной машины).
+
 - Закройте Gazebo. 
-- Откройте терминал и вызовите следующие команды:
+- Откройте терминал и вызовите следующие команды: НАДО ИСПРАВИТЬ
 ```bash
 cd Desktop #Если вы все ещё не находитесь в данной дериктории - перейдите в неё
 python3 houses.py
@@ -139,125 +125,7 @@ python3 houses.py
 Исходный код программы с комментариями: 
 
 ``` python
-import random  # Импортируем модуль random для генерации случайных чисел
 
-# Список доступных цветов для зданий
-colors = ['model://dronepoint_yellow',
-          'model://dronepoint_red',
-          'model://dronepoint_green',
-          'model://dronepoint_blue']
-
-# Список возможных позиций (координат) для размещения зданий
-poss = [(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8),
-        (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8),
-        (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6), (3, 7), (3, 8),
-        (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7), (4, 8),
-        (5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6), (5, 7), (5, 8),
-        (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7), (6, 8),
-        (7, 1), (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (7, 7), (7, 8),
-        (8, 1), (8, 2), (8, 3), (8, 4), (8, 5), (8, 6), (8, 7), (8, 8)]
-
-randPos = []   # Список для хранения случайно выбранных позиций зданий
-randColor = [] # Список для хранения случайно выбранных цветов зданий
-
-# Цикл для выбора случайных позиций и цветов для пяти зданий
-for i in range(5):
-    p = poss[random.randrange(len(poss))] # Выбор случайной позиции из списка
-    poss.remove(p)                        # Удаление выбранной позиции из списка возможных
-    randColor.append(colors[random.randrange(4)]) # Выбор случайного цвета и сохранения в список
-    randPos.append(f"{p[0]} {p[1]}")     # Форматирование позиции в строку и сохрание в список
-
-# Открытие файла для записи настроек мира
-world = open('/home/clover/catkin_ws/src/clover/clover_simulation/resources/worlds/clover_aruco.world', 'w')
-
-# Запись содержимого файла
-world.write('''<?xml version="1.0" ?>
-<sdf version="1.5">
-  <world name="NTO">
-    <include>
-      <uri>model://sun</uri>
-    </include>
-
-    <include>
-      <uri>model://parquet_plane</uri>
-      <pose>0 0 -0.01 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://aruco_cmit_txt</uri>
-    </include>
-
-    <include>
-      <name>dronepoint_n1</name>
-      <uri>{}</uri>
-      <pose>{} 0 0 0 0</pose>
-    </include>
-
-    <include>
-      <name>dronepoint_n2</name>
-      <uri>{}</uri>
-      <pose>{} 0 0 0 0</pose>
-    </include>
-
-    <include>
-      <name>dronepoint_n3</name>
-      <uri>{}</uri>
-      <pose>{} 0 0 0 0</pose>
-    </include>
-
-    <include>
-      <name>dronepoint_n4</name>
-      <uri>{}</uri>
-      <pose>{} 0 0 0 0</pose>
-    </include>
-
-    <include>
-      <name>dronepoint_n5</name>
-      <uri>{}</uri>
-      <pose>{} 0 0 0 0</pose>
-    </include>
-
-    <scene>
-      <ambient>0.8 0.8 0.8 1</ambient>
-      <background>0.8 0.9 1 1</background>
-      <shadows>false</shadows>
-      <grid>false</grid>
-      <origin_visual>false</origin_visual>
-    </scene>
-  
-    <physics name='default_physics' default='0' type='ode'>
-      <gravity>0 0 -9.8066</gravity>
-      <ode>
-        <solver>
-          <type>quick</type>
-          <iters>10</iters>
-          <sor>1.3</sor>
-          <use_dynamic_moi_rescaling>0</use_dynamic_moi_rescaling>
-        </solver>
-        <constraints>
-          <cfm>0</cfm>
-          <erp>0.2</erp>
-          <contact_max_correcting_vel>100</contact_max_correcting_vel>
-          <contact_surface_layer>0.001</contact_surface_layer>
-        </constraints>
-      </ode>
-      <max_step_size>0.004</max_step_size>
-      <real_time_factor>1</real_time_factor>
-      <real_time_update_rate>250</real_time_update_rate>
-      <magnetic_field>6.0e-6 2.3e-5 -4.2e-5</magnetic_field>
-    </physics>
-  </world>
-</sdf>
-
-'''.format(
-    randColor[0], randPos[0],   # Форматирование данных для первого здания
-    randColor[1], randPos[1],   # Форматирование данных для второго здания
-    randColor[2], randPos[2],   # Форматирование данных для третьего здания
-    randColor[3], randPos[3],   # Форматирование данных для четвертого здания
-    randColor[4], randPos[4]    # Форматирование данных для пятого здания
-))
-
-world.close() # Закрытие файла после записи
 ```
 
 ## 4. Полетная миссия НАДО ПОЛНОСТЬЮ ПЕРЕПИСАТЬ
@@ -292,167 +160,9 @@ rostopic echo /buildings
 
 Исходный код программы с комментариями: 
 ```python
-import rospy
-import cv2
-from sensor_msgs.msg import Image
-from cv_bridge import CvBridge
-import numpy as np
-import math
-from clover import srv
-from std_srvs.srv import Trigger
-from std_msgs.msg import String
-from server import Server
-from threading import Thread
-from mavros_msgs.srv import CommandBool
-
-# Инициализация сервера управления
-server = Server
-
-# Инициализация ROS-ноды
-rospy.init_node('flight')
-
-# Создание топика для публикации информации о зданиях
-buildings = rospy.Publisher('/buildings', String, queue_size=1)
-
-# Прокси для вызова сервисов Clover
-get_telemetry = rospy.ServiceProxy('get_telemetry', srv.GetTelemetry)
-navigate = rospy.ServiceProxy('navigate', srv.Navigate)
-land = rospy.ServiceProxy('land', Trigger)
-arming = rospy.ServiceProxy('mavros/cmd/arming', CommandBool)
-
-# Создание объекта для преобразования изображений из ROS в OpenCV
-bridge = CvBridge()
-
-# Функция навигации с ожиданием достижения цели
-def navigate_wait(x=0, y=0, z=0, yaw=float('nan'), speed=0.4, frame_id='', auto_arm=False, tolerance=0.2):
-    navigate(x=x, y=y, z=z, yaw=yaw, speed=speed, frame_id=frame_id, auto_arm=auto_arm)
-
-    while not rospy.is_shutdown():
-        telem = get_telemetry(frame_id='navigate_target')
-        if math.sqrt(telem.x ** 2 + telem.y ** 2 + telem.z ** 2) < tolerance:
-            break
-        rospy.sleep(0.2)
-
-
-# Обработчик изображения для определения цвета зданий
-def image_callback_color():
-    img = bridge.imgmsg_to_cv2(rospy.wait_for_message('main_camera/image_raw', Image), 'bgr8') # Получение изображения
-    img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # Преобразование изображения в HSV
-    telemet = get_telemetry(frame_id='aruco_map') # Получение телеметрии для координат
-    
-    # Задание границ цветов для определения зданий
-    red_high= (15, 255, 255)   
-    red_low= (0, 240, 240)
-
-    blue_high= (122, 255, 255)  
-    blue_low= (110, 245, 245)
-
-    green_high= (62, 255, 255)  
-    green_low= (55, 247, 250)
-
-    yellow_high= (35, 255, 255)  
-    yellow_low= (25, 245, 250)
-    
-    # Создание масок для каждого цвета
-    red_mask = cv2.inRange(img_hsv, red_low, red_high)
-    blue_mask = cv2.inRange(img_hsv, blue_low, blue_high)
-    green_mask = cv2.inRange(img_hsv, green_low, green_high)
-    yellow_mask = cv2.inRange(img_hsv, yellow_low, yellow_high)
-    
-    # Определение цвета в центре изображения и публикация информации в топик и на веб-сервер
-    if red_mask[119][159] == 255:
-        server.buildings.append([round(telemet.x), round(telemet.y), 'red'])
-        print("administration building; red at x: " + str(round(telemet.x)) + ", y: " + str(round(telemet.y)))    
-        buildings.publish(data = ("administration building; red at x: " + str(round(telemet.x)) + ", y: " + str(round(telemet.y))))    
-
-    elif blue_mask[119][159] == 255:
-        server.buildings.append([round(telemet.x), round(telemet.y), 'blue'])
-        print("coal enrichment building; blue at x: " + str(round(telemet.x)) + ", y: " + str(round(telemet.y)))
-        buildings.publish(data = ("coal enrichment building; blue at x: " + str(round(telemet.x)) + ", y: " + str(round(telemet.y))))
-    elif green_mask[119][159] == 255:
-        server.buildings.append([round(telemet.x), round(telemet.y), 'green'])
-        print("laboratory; green at x: " + str(round(telemet.x)) + ", y: " + str(round(telemet.y)))
-        buildings.publish(data = ("laboratory; green at x: " + str(round(telemet.x)) + ", y: " + str(round(telemet.y))))
-    elif yellow_mask[119][159] == 255:
-        server.buildings.append([round(telemet.x), round(telemet.y), 'yellow'])
-        print("entrance to the mine; yellow at x: " + str(round(telemet.x)) + ", y: " + str(round(telemet.y)))
-        buildings.publish(data = ("entrance to the mine; yellow at x: " + str(round(telemet.x)) + ", y: " + str(round(telemet.y))))
-
-# Проверка на остановку и возобновление полета
-def checkStop():
-    stoped = False
-    if (server.action != 'start'):
-        land() # Приземление, если полет остановлен
-        stoped = True
-        if(server.action == 'kill'): # Завершение программы, если команда "kill switch"
-            print('Killed')
-            exit()
-        rospy.sleep(10)
-        print('Disarmed, can start again')
-        server.action = 'landed'
-    while (server.action != 'start'): # Ожидание возобновления полета
-        if(server.action == 'kill'): # Завершение программы, если команда "kill switch"
-            print('Killed')
-            exit()
-        pass
-    if (stoped): # Возобновление полета
-        print('Started again')
-        navigate(x=0, y=0, z=1.7, speed=0.5, frame_id='body', auto_arm=True)
-        rospy.sleep(5)
-
-# Основная функция управления дроном
-def main():
-    while (server.action != 'start'): # Ожидание возобновления полета
-        if(server.action == 'kill'): # Завершение программы, если команда "kill switch"
-            print('Killed')
-            exit()
-        pass
-    # Начало полёта
-    print('Start fly')
-    navigate(x=0, y=0, z=1.7, speed=0.5, frame_id='body', auto_arm=True)
-    rospy.sleep(7)
-    teleme = get_telemetry(frame_id='aruco_map')
-    startx = round(teleme.x)
-    starty = round(teleme.y)
-
-    # Сканирование территории
-    for y1 in range(10): # Поочередное движение по сетке
-        if y1 % 2==0:
-            for x1 in range(10):
-                checkStop()
-                navigate_wait(x = x1, y = y1, z = 1.7, frame_id='aruco_map')
-                rospy.sleep(1)
-                image_callback_color()
-                rospy.sleep(2)
-        else:
-            for x1 in range(9, -1, -1):
-                checkStop()
-                navigate_wait(x = x1, y = y1, z = 1.7, frame_id='aruco_map')
-                rospy.sleep(1)
-                image_callback_color()
-                rospy.sleep(2)
-                
-    # Возврат на стартовую позицию
-    x1, y1 = 0, 9
-    while (x1 > startx or y1 > starty):
-        x1 -= x1 > startx
-        y1 -= y1 > starty
-        checkStop()
-        navigate_wait(x = x1, y = y1, z = 1.7, frame_id='aruco_map')
-        rospy.sleep(1.5)
-    
-    land() # Приземление по завершении работы
-    print('End program')
-    exit()
-
-# Запуск основной функции в отдельном потоке
-th = Thread(target=main)
-th.start()
-
-# Запуск веб-сервиса
-server.start()
 ```
-## 5. Работа с веб-сервисом 
+
+## 5. Работа с веб-сервисом !!! Надо ПЕРЕПИСАТЬ
 
 Веб-сервис позволяет нам контролировать полёт дрона.
 - Перед открытием веб-сервиса необходимо запустить полетную миссию (см. пункт 4. Полетная миссия).
