@@ -5,6 +5,7 @@ import shutil
 # Определяем пути к различным ресурсам и необходимые константы
 arucoPath = '/home/clover/catkin_ws/src/clover/clover/launch/aruco.launch'
 cloverPath = '/home/clover/catkin_ws/src/clover/clover/launch/clover.launch'
+emptyWorldPath = '/home/clover/catkin_ws/src/clover/clover_simulation/resources/worlds/clover.world'
 worldPath = '/home/clover/catkin_ws/src/clover/clover_simulation/resources/worlds/clover_aruco.world'
 modelsPath = '/home/clover/catkin_ws/src/clover/clover_simulation/models/'
 mitPath = '/home/clover/catkin_ws/src/clover/aruco_pose/map/'
@@ -14,8 +15,8 @@ length = 0.33            # длина метки аруко карты
 
 # ==============genmap==============
 
-# создаем карту 4 на 15
-res = os.system(f'rosrun aruco_pose genmap.py {length} 4 15 1 1 0 > {mitPath}{mitFilename} --top-left')
+# создаем карту 5 на 12
+res = os.system(f'rosrun aruco_pose genmap.py {length} 5 12 1 1 0 > {mitPath}{mitFilename} --top-left')
 
 if res != 0:
     print('Ошибка создания карты')
@@ -23,6 +24,10 @@ if res != 0:
 
 # ==============world===============
 
+# применяем карту в gazebo
+os.system('rosrun clover_simulation aruco_gen --single-model \\' 
+          f'--source-world={emptyWorldPath} \\' 
+          f'{mitPath}{mitFilename} > \\' + worldPath)
 # копируем все объекты мира
 shutil.copytree('./gazebo_settings/gazebo_models', modelsPath, dirs_exist_ok=True)
 # копируем конфигурацию мира
