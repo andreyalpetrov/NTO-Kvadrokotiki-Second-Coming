@@ -25,9 +25,12 @@ if res != 0:
 # ==============world===============
 
 # применяем карту в gazebo
-os.system('rosrun clover_simulation aruco_gen --single-model \\' 
+res = os.system('rosrun clover_simulation aruco_gen --single-model \\' 
           f'--source-world={emptyWorldPath} \\' 
           f'{mitPath}{mitFilename} > \\' + worldPath)
+if res != 0:
+    print('Ошибка применения карты в gazebo')
+    exit()
 # копируем все объекты мира
 shutil.copytree('./gazebo_settings/gazebo_models', modelsPath, dirs_exist_ok=True)
 # копируем конфигурацию мира
