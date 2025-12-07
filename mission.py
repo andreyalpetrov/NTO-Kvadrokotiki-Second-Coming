@@ -33,11 +33,14 @@ def callback_video(data):
         add_inset(x, y)
     image_pub.publish(compute_vision.bridge.cv2_to_imgmsg(cv_image, 'bgr8'))
     print(cords)
-    
-    
+
 
 fly.navigate(z=1, speed=1, frame_id='body', auto_arm=True)
 fly.rospy.sleep(5)
+
+teleme = fly.get_telemetry(frame_id='aruco_map')
+startx = round(teleme.x)
+starty = round(teleme.y)
 
 image_sub = fly.rospy.Subscriber('main_camera/image_raw_throttled', Image, callback_video)
 
@@ -47,5 +50,5 @@ fly.navigate_wait(3, 10)
 
 image_sub.unregister()
 
-fly.navigate_wait(0, 0)
+fly.navigate_wait(startx, starty)
 fly.land()
