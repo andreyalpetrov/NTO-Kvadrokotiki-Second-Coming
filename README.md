@@ -68,6 +68,7 @@ python3 random_gen.py
 ## 4. Полетная миссия
 
 Для реализации полётной миссии были написаны 4 кода, каждый выполняет свою задачу:
+
 -[flight_api.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/flight_api.py "flight_api.py") - здесь написана функция navigate_wait и список переменных, которые понадобились в остальных кодах.
 - [compute_vision.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/compute_vision.py "compute_vision.py") - этот код находит точку пересечения двух труб под углом в 90 градусов
 - [campoint2globalcord.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/campoint2globalcord.py "campoint2globalcord.py") - этот код переводит координаты точки пересечения на картинке в глобальные координаты
