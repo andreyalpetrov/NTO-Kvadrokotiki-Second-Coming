@@ -24,7 +24,7 @@ if res != 0:
 # ==============world===============
 
 # копируем все объекты мира
-shutil.copytree('./gazebo_settings/gazebo_models', modelsPath)
+shutil.copytree('./gazebo_settings/gazebo_models', modelsPath, dirs_exist_ok=True)
 # копируем конфигурацию мира
 shutil.copy('./gazebo_settings/clover_aruco.world', worldPath)
 
@@ -43,7 +43,7 @@ for i in range(len(root.findall('arg'))):
     elif aruco[i].attrib['name'] == 'map':
         aruco[i].attrib['default'] = mitFilename  # Устанавливаем имя карты
     elif aruco[i].attrib['name'] == 'length':
-        aruco[i].attrib['default'] = length  # Устанавливаем длину из файла карты
+        aruco[i].attrib['default'] = str(length)  # Устанавливаем длину из файла карты
 root.write(arucoPath)  # Записываем изменения обратно в файл aruco.launch
 
 # Обработка файла clover.launch
