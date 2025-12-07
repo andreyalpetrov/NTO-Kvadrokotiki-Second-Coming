@@ -67,4 +67,6 @@ def main():
         add_insets(d, i >= 3, i)
     return dists
 
-print(main())
+if __name__ == '__main__':
+    res = main()
+    print('Расстояния между началом трубы и врезкой:', res)
