@@ -14,7 +14,7 @@ length = 0.33            # длина метки аруко карты
 
 
 # ===============pip================
-res = os.system('pip3 install Flask==2.2.2 scipy')
+res = os.system('pip3 install Flask scipy')
 
 if res != 0:
     print('Ошибка установки библиотеки flask. Установите её вручную')
