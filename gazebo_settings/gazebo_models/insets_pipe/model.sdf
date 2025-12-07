@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<sdf version='1.7'>
+  <model name='insets_pipe'>
+    <static>true</static>
+    <link name='insets_pipe'>
+
+      <visual name='insets_pipe'>
+        <geometry>
+          <box>
+            <size>0.1 1.5 0.02</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0 0 1 0</ambient>
+          <diffuse>0.7 0.7 0.6 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 1 1</emissive>
+        </material>
+        <pose>0 0 0 0 0 1.57</pose>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+
+    </link>
+  </model>
+</sdf>
