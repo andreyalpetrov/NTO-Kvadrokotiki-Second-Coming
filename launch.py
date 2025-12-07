@@ -1,21 +1,34 @@
 from xml.etree import ElementTree as ET  # Импортируем модуль для работы с XML
+import os
+import shutil
 
-# Определяем пути к различным ресурсам
+# Определяем пути к различным ресурсам и необходимые константы
 arucoPath = '/home/clover/catkin_ws/src/clover/clover/launch/aruco.launch'
 cloverPath = '/home/clover/catkin_ws/src/clover/clover/launch/clover.launch'
 worldPath = '/home/clover/catkin_ws/src/clover/clover_simulation/resources/worlds/clover_aruco.world'
+modelsPath = '/home/clover/catkin_ws/src/clover/clover_simulation/models/'
 mitPath = '/home/clover/catkin_ws/src/clover/aruco_pose/map/'
+mitFilename = 'cmit.txt'
+length = 0.33            # длина метки аруко карты
 
 
-try: # Попытка открыть и обработать файл мира (world)
-    root = ET.parse(worldPath)  # Парсим XML файл мира
-    world = root.getroot()  # Получаем корневой элемент
-    mit = world[0][2][0].text.split('_')  # Извлекаем текст и разбиваем его на части
-    f = open(mitPath + mit[1] + '.' + mit[2], 'r')  # Открываем файл карты по извлеченному имени
-    length = f.read().split('\n')[1].split('\t')[1]  # Читаем длину из файла карты
-except:
-    print('Map not found! Run genmap.py, https://clover.coex.tech/en/aruco_map.html#marker-map-definition')  # Выводим сообщение об ошибке
-    exit()  # Завершаем выполнение программы
+# ==============genmap==============
+
+# создаем карту 4 на 15
+res = os.system(f'rosrun aruco_pose genmap.py {length} 4 15 1 1 0 > {mitPath}{mitFilename} --top-left')
+
+if res != 0:
+    print('Ошибка создания карты')
+    exit()
+
+# ==============world===============
+
+# копируем все объекты мира
+shutil.copytree('./gazebo_settings/gazebo_models', modelsPath)
+# копируем конфигурацию мира
+shutil.copy('./gazebo_settings/clover_aruco.world', worldPath)
+
+# ==============launch==============
 
 # Обработка файла aruco.launch
 root = ET.parse(arucoPath)  # Парсим XML файл aruco
@@ -28,7 +41,7 @@ for i in range(len(root.findall('arg'))):
     elif aruco[i].attrib['name'] == 'placement':
         aruco[i].attrib['default'] = 'floor'  # Устанавливаем значение ию для размещения
     elif aruco[i].attrib['name'] == 'map':
-        aruco[i].attrib['default'] = mit[1] + '.' + mit[2]  # Устанавливаем имя карты
+        aruco[i].attrib['default'] = mitFilename  # Устанавливаем имя карты
     elif aruco[i].attrib['name'] == 'length':
         aruco[i].attrib['default'] = length  # Устанавливаем длину из файла карты
 root.write(arucoPath)  # Записываем изменения обратно в файл aruco.launch

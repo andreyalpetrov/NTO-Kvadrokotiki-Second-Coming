@@ -1,0 +1,55 @@
+<?xml version='1.0'?>
+<sdf version='1.7'>
+  <model name='main_pipe'>
+    <static>true</static>
+    <link name='main_pipe'>
+
+      <visual name='main_pipe1'>
+        <geometry>
+          <box>
+            <size>0.2 6 0.02</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0 0 1 0</ambient>
+          <diffuse>0.7 0.7 0.6 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 1 1</emissive>
+        </material>
+        <pose>0 3 0 0 0 0</pose>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+
+      <visual name="main_pipe2">
+        <pose>0.98 7.68 0 0 0 -0.52</pose>
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+            <box>
+              <size>0.2 4 0.02</size>
+            </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+          <ambient>0 0 1 0</ambient>
+          <diffuse>0.7 0.7 0.6 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 1 1</emissive>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
