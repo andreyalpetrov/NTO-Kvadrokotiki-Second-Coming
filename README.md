@@ -26,6 +26,7 @@
 	- Processors. Количество процессоров - 1 (Number of processors).
 				Количество ядер - 3. (Number of cores per perocessor).
 	- Network Adapter.  Выбрать тип соединения `Bridged: Connected directly to the physical network.` Поставить галочку  на `Connect at power on`. 
+	
 	Остальное можно оставить по умолчанию. Жмем кнопку `Ok`. Теперь отображаются актуальные параметры.
 ---
 ## 2. Настройка симулятора. 
@@ -35,7 +36,7 @@
 cd ~/Desktop
 git clone https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming.git
 ```
-Перейдя в проводник, перетащите все файлы из скаченной папки на рабочий стол.
+
 
 > [!IMPORTANT]
 > Перед началом работы крайне важно убедится в том, что в терминале по умолчанию стоит кодировка UTF-8. В противном случае вся кириллица не будет отображаться.
@@ -78,28 +79,29 @@ python3 random_gen.py
 ```
 - Запустите Gazebo 
 ---
-## 4. Полетная миссия
+## 4. Полетная миссия.
 
-Для реализации полётной миссии были написаны 4 кода, каждый выполняет свою задачу:
+Для реализации полётной миссии были написаны 4 кода, они находятся в папке mission:
 
 - [flight_api.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/flight_api.py "flight_api.py") - здесь написана функция navigate_wait и список переменных, которые понадобились в остальных кодах.
 - [compute_vision.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/compute_vision.py "compute_vision.py") - этот код находит точку пересечения двух труб под углом в 90 градусов
 - [campoint2globalcord.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/campoint2globalcord.py "campoint2globalcord.py") - этот код переводит координаты точки пересечения на картинке в глобальные координаты
-- [mission.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/main.py "main.py") - основной код полёта, в нём как раз используются все выше написанные скрипты
+- [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/main.py "main.py") - основной код полёта, в нём как раз используются все выше написанные скрипты
 
-В связи с тем, что в `mission.py` коды `compute_vision`, `campoint2globalcord` и `flight_api` подцепляются как библиотеки, мы можем запустить только mission.py, не запуская остальные скрипты.
-Для запуска `mission.py` необходимо в терминал вписать следующие команды:
-
-```bash
-cd ~/Desktop/NTO-Kvadrokotiki-Second-Coming #Если вы все ещё не находитесь в данной дериктории - перейдите в неё
-python3 ./mission/main.py
-```
+В связи с тем, что в `main.py` коды `compute_vision`, `campoint2globalcord` и `flight_api` подцепляются как библиотеки, мы можем запустить только mission.py, не запуская остальные скрипты. Нет смысла запускать `main.py` вручную, т.к. при запуске веб-сервера при нажатии на кнопку `start` всё само полетит.
 
 
 Вкратце о работе всего этого:
  1) Дрон пролетает вдоль нефтепровода
  2) параллельно полёту выполняется мониторинг на предмет незаконных врезок
- 3) при помощи функций в кодах `compute_vision` и `campoint2globalcord` выполняется точное определение координат врезок
+ 3) при помощи функций в кодах `compute_vision` и `campoint2globalcord` выполняется точное определение глобальных координат врезок
  4) данные мониторинга транслируются в топики `/tubes` и `/insets_image` (insets_image был сделан для отладки)
- 5) !!!!!!!!веб-сервер подцепляет данные из топиков и транслирует на веб-страницу
- 6) дрон возвращается в координату взлёта и производит автоматическую посадку
+ 5) дрон возвращается в координату взлёта и производит автоматическую посадку
+
+---
+## 5. Работа с веб-сервисом.
+
+Веб-сервис позволяет нам легко контролировать полёт дрона и отслеживать найденные врезки в удобном графическом интерфейсе.
+
+Для работы веб-сервиса необходимо запустить [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/server/main.py "main.py"), который работает в многопоточном режиме. В первом потоке он запускает ROS-ноду, во втором потоке - веб сервер.
+При нажатии на кнопку `start` веб сервер отдельным процессом запускает код полёта [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/main.py "main.py"), при нажатии на `stop` -  веб сервер "убивает" процесс миссии по PID процесса.
