@@ -58,7 +58,7 @@ git clone https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming.git
 
 Далее вызываем терминал из рабочего стола, либо переходим с помощью команды и вызываем скрипт.
 ```bash
-cd ~/Desktop #Если вы все ещё не находитесь в данной дериктории - перейдите в неё
+cd ~/Desktop/NTO-Kvadrokotiki-Second-Coming #Если вы все ещё не находитесь в данной дериктории - перейдите в неё
 python3 launch.py
 ```
 ---
@@ -73,7 +73,7 @@ python3 launch.py
 - Закройте Gazebo. 
 - Откройте терминал и вызовите следующие команды: 
 ```bash
-cd ~/Desktop #Если вы все ещё не находитесь в данной дериктории - перейдите в неё
+cd ~/Desktop/NTO-Kvadrokotiki-Second-Coming #Если вы все ещё не находитесь в данной дериктории - перейдите в неё
 python3 random_gen.py
 ```
 - Запустите Gazebo 
@@ -82,17 +82,17 @@ python3 random_gen.py
 
 Для реализации полётной миссии были написаны 4 кода, каждый выполняет свою задачу:
 
-- [flight_api.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/flight_api.py "flight_api.py") - здесь написана функция navigate_wait и список переменных, которые понадобились в остальных кодах.
-- [compute_vision.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/compute_vision.py "compute_vision.py") - этот код находит точку пересечения двух труб под углом в 90 градусов
-- [campoint2globalcord.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/campoint2globalcord.py "campoint2globalcord.py") - этот код переводит координаты точки пересечения на картинке в глобальные координаты
-- [mission.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission.py "mission.py") - основной код полёта, в нём как раз используются все выше написанные скрипты
+- [flight_api.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/flight_api.py "flight_api.py") - здесь написана функция navigate_wait и список переменных, которые понадобились в остальных кодах.
+- [compute_vision.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/compute_vision.py "compute_vision.py") - этот код находит точку пересечения двух труб под углом в 90 градусов
+- [campoint2globalcord.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/campoint2globalcord.py "campoint2globalcord.py") - этот код переводит координаты точки пересечения на картинке в глобальные координаты
+- [mission.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/main.py "main.py") - основной код полёта, в нём как раз используются все выше написанные скрипты
 
 В связи с тем, что в `mission.py` коды `compute_vision`, `campoint2globalcord` и `flight_api` подцепляются как библиотеки, мы можем запустить только mission.py, не запуская остальные скрипты.
 Для запуска `mission.py` необходимо в терминал вписать следующие команды:
 
 ```bash
-cd ~/Desktop #Если вы все ещё не находитесь в данной дериктории - перейдите в неё
-python3 mission.py
+cd ~/Desktop/NTO-Kvadrokotiki-Second-Coming #Если вы все ещё не находитесь в данной дериктории - перейдите в неё
+python3 ./mission/main.py
 ```
 
 
