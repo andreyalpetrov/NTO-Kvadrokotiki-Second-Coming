@@ -105,3 +105,9 @@ python3 random_gen.py
 
 Для работы веб-сервиса необходимо запустить [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/server/main.py "main.py"), который работает в многопоточном режиме. В первом потоке он запускает ROS-ноду, во втором потоке - веб сервер.
 При нажатии на кнопку `start` веб сервер отдельным процессом запускает код полёта [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/main.py "main.py"), при нажатии на `stop` -  веб сервер "убивает" процесс миссии по PID процесса.
+
+Для запуска `main.py` в папке `server` откройте терминал и введите:
+```Bash
+cd ~/Desktop/NTO-Kvadrokotiki-Second-Coming/server
+python3 main.py
+```
