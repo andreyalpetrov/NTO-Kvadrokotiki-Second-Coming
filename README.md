@@ -108,6 +108,6 @@ python3 random_gen.py
 
 Для запуска `main.py` в папке `server` откройте терминал и введите:
 ```Bash
-cd ~/Desktop/NTO-Kvadrokotiki-Second-Coming/server
-python3 main.py
+cd ~/Desktop/NTO-Kvadrokotiki-Second-Coming
+python3 ./server/main.py
 ```
