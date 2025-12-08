@@ -31,8 +31,6 @@ def callback_video(data):
     if lines is not None:
         lines = lines[:, 0, :]  # (N, 4)
 
-        print(f"Найдено {len(lines)} синих отрезков")
-
         # Перебираем пары и ищем перпендикулярные пересечения
         for i in range(len(lines)):
             for j in range(i + 1, len(lines)):

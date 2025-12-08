@@ -26,7 +26,7 @@ def start_mission():
         return jsonify({"status": "error", "message": "Миссия уже запущена"}), 400
     
     try:
-        mission_process = subprocess.Popen(['python3', 'mission.py']) 
+        mission_process = subprocess.Popen(['python3', './mission/main.py']) 
         return jsonify({"status": "ok", "message": "Миссия запущена"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

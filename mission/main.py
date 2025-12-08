@@ -31,7 +31,6 @@ def callback_video(data):
         x, y, _ = c2g.get_marker_coordinates_in_aruco_map(x, y)
         add_inset(x, y)
     image_pub.publish(compute_vision.bridge.cv2_to_imgmsg(cv_image, 'bgr8'))
-    print(cords)
 
 
 fly.navigate(z=1, speed=1, frame_id='body', auto_arm=True)

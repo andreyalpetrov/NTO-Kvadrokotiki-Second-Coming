@@ -9,7 +9,7 @@ import rospy
 bridge = CvBridge()
 rospy.init_node('web_server')
 
-img_map = cv2.imread('map.png')
+img_map = cv2.imread('./server/map.png')
 mission_data = {
     'aruco_pose': None,
     'tubes': None
