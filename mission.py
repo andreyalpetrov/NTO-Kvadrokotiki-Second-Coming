@@ -22,7 +22,6 @@ def add_inset(x1, y1):
             return None
     insets.append((x1, y1))
     insets_pub.publish(json.dumps(insets))
-    # insets_pub.publish(''.join([f'Врезка {i+1}: x={cords[0]:.2f}; y={cords[1]:.2f}\n' for i, cords in enumerate(insets)]))
 
 
 def callback_video(data):

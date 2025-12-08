@@ -29,11 +29,11 @@ def update_data(*args):
     global mission_data
     img = img_map.copy()
 
-    # Траектория робота (как было)
+    # Визуализация основной трубы
     cv2.line(img, translate_coords(1, 1), translate_coords(1, 7), (255, 125, 125), thickness=14, lineType=cv2.LINE_AA)
     cv2.line(img, translate_coords(1, 7), translate_coords(1+1.99, 7+3.47), (255, 125, 125), thickness=14, lineType=cv2.LINE_AA)
 
-    # Рисуем трубки + номера
+    # Рисуем точки врезок + порядковый номер
     if mission_data['tubes'] is not None:
         cords = mission_data['tubes']
         for idx, tube in enumerate(cords):
@@ -42,11 +42,11 @@ def update_data(*args):
             # Красный кружок
             cv2.circle(img, center, 10, (0, 0,255), -1)
             
-            # Номер трубки (начиная с 1)
+            # Номер врезки (начиная с 1)
             text = str(idx + 1)
             font = cv2.FONT_HERSHEY_SIMPLEX
             font_scale = 0.8
-            color = (255, 255, 255)      # белый текст
+            color = (255, 255, 255)
             thickness = 2
             
             # Получаем размер текста, чтобы отцентрировать
@@ -65,7 +65,7 @@ def update_data(*args):
             cv2.putText(img, text, (text_x, text_y),
                         font, font_scale, color, thickness, cv2.LINE_AA)
 
-    # Позиция ArUco (синий круг)
+    # Позиция дрона (синий круг)
     if mission_data['aruco_pose'] is not None:
         x = mission_data['aruco_pose']['x']
         y = mission_data['aruco_pose']['y']
@@ -85,7 +85,7 @@ def tubes_callback(data):
     try:
         mission_data['tubes'] = json.loads(data.data)
     except json.JSONDecodeError:
-        rospy.logwarn("Не удалось распарсить данные трубок")
+        rospy.logwarn("Не удалось распарсить данные врезок")
 
 def main():
     rospy.Subscriber("/tubes", String, tubes_callback)

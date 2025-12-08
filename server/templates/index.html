@@ -82,8 +82,6 @@
         <!-- Управление -->
         <div class="column">
             <h1>Миссия: Поиск врезок в трубопроводе</h1>
-            
-            <!-- <div class="status" id="status">Готов к запуску</div> -->
 
             <button id="start">Запустить миссию</button>
             <button id="stop">Остановить миссию</button>
@@ -92,9 +90,9 @@
             <div class="cords" id="cords">Ожидание координат врезок...</div>
         </div>
 
-        <!-- Видеопоток с карты/камеры -->
+        <!-- План полёта -->
         <div class="column">
-            <h2 style="text-align:center;">Видеопоток с дрона</h2>
+            <h2 style="text-align:center;">План полёта</h2>
             <img src="http://localhost:8080/stream?topic=/web_server/map_mission" alt="Видеопоток">
         </div>
     </div>
@@ -103,7 +101,7 @@
         const statusEl = document.getElementById('status');
         const cordsEl = document.getElementById('cords');
 
-        // Обновление координат врезок каждые 2 секунды
+        // Обновление координат врезок каждые 1 секунды
         function updateCords() {
             fetch('/api/get_insets_cords')
                 .then(r => r.json())
@@ -129,8 +127,7 @@
                 .then(r => r.json())
                 .then(res => {
                     if (res.status === "ok") {
-                        statusEl.textContent = "Миссия запущена";
-                        statusEl.style.color = "#27ae60";
+                        console.log("Миссия запущена")
                     } else {
                         alert("Ошибка: " + res.message);
                     }
@@ -142,27 +139,23 @@
                 .then(r => r.json())
                 .then(res => {
                     if (res.status === "ok") {
-                        statusEl.textContent = "Миссия остановлена";
-                        statusEl.style.color = "#e67e22";
+                        console.log("Миссия остановлена")
                     }
                 });
         };
 
         document.getElementById('kill').onclick = () => {
-            // if (!confirm("ВЫ УВЕРЕНЫ? Это немедленно разоружит дрон и посадит его!")) return;
-
             fetch('/api/killswitch')
                 .then(r => r.json())
                 .then(res => {
-                    statusEl.textContent = "АВАРИЙНАЯ ОСТАНОВКА!";
-                    statusEl.style.color = "#c0392b";
-                    alert("Дрон разоружён и посажен");
+                    console.warn("АВАРИЙНАЯ ОСТАНОВКА!")
+                    alert("Дрон посажен");
                 });
         };
 
-        // Обновляем координаты каждые 2 секунды + сразу при загрузке
+        // Обновляем координаты каждые 1 секунды + сразу при загрузке
         updateCords();
-        setInterval(updateCords, 2000);
+        setInterval(updateCords, 1000);
     </script>
 </body>
 </html>
