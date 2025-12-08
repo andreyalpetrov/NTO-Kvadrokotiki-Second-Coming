@@ -79,7 +79,6 @@ def aruco_pose_callback(data):
     y = data.pose.pose.position.y
     mission_data['aruco_pose'] = {"x": x, "y": y}
 
-rospy.Subscriber("/aruco_map/pose", PoseWithCovarianceStamped, aruco_pose_callback)
 
 def tubes_callback(data):
     global mission_data
@@ -88,9 +87,11 @@ def tubes_callback(data):
     except json.JSONDecodeError:
         rospy.logwarn("Не удалось распарсить данные трубок")
 
-rospy.Subscriber("/tubes", String, tubes_callback)
+def main():
+    rospy.Subscriber("/tubes", String, tubes_callback)
+    rospy.Subscriber("/aruco_map/pose", PoseWithCovarianceStamped, aruco_pose_callback)
 
-# Обновляем карту 5 раз в секунду (каждые 0.2 с)
-rospy.Timer(rospy.Duration(0.2), update_data)
+    # Обновляем карту 5 раз в секунду (каждые 0.2 с)
+    rospy.Timer(rospy.Duration(0.2), update_data)
 
-rospy.spin()
+    rospy.spin()

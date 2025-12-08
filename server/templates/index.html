@@ -1,43 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Управление миссией — Поиск врезок</title>
     <style>
-        .flex_box{
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .flex_box {
             display: flex;
-            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
         }
-        .column{
-            padding: 10px;
-            max-width: 50%;
+        .column {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-width: 320px;
+            flex: 1;
         }
-        button{
-            display: block;
-            margin: 20px 35px;
-            height: 50px;
-            width: 25%;
-            font-size: large;
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
         }
-        .cords{
-            margin: 20px 35px;
-            font-size: large;
+        button {
             width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        #start { background: #27ae60; color: white; }
+        #start:hover { background: #219a52; }
+
+        #stop { background: #e67e22; color: white; }
+        #stop:hover { background: #d35400; }
+
+        #kill { background: #c0392b; color: white; }
+        #kill:hover { background: #a93226; }
+
+        .cords {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            min-height: 120px;
+            font-family: monospace;
+            font-size: 15px;
+            white-space: pre-wrap;
+            margin-top: 15px;
+        }
+        .status {
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        img {
+            width: 100%;
+            border-radius: 8px;
+            border: 3px solid #3498db;
+        }
+        @media (max-width: 900px) {
+            .flex_box { flex-direction: column; }
+            .column { max-width: 100%; }
         }
     </style>
 </head>
 <body>
     <div class="flex_box">
+        <!-- Управление -->
         <div class="column">
-            <h1>Миссия: "Нахождения врезок в трубопроводе"</h1>
-            <button id="start">Start</button>
-            <button id="stop">Stop</button>
-            <button id="kill">Kill switch</button>
-            <p class="cords">Пока ничего нет</p>
+            <h1>Миссия: Поиск врезок в трубопроводе</h1>
+            
+            <!-- <div class="status" id="status">Готов к запуску</div> -->
+
+            <button id="start">Запустить миссию</button>
+            <button id="stop">Остановить миссию</button>
+            <button id="kill">АВАРИЙНАЯ ОСТАНОВКА</button>
+
+            <div class="cords" id="cords">Ожидание координат врезок...</div>
         </div>
-        <div class="column"><img src="http://localhost:8080/stream?topic=/web_server/map_mission"></div>
+
+        <!-- Видеопоток с карты/камеры -->
+        <div class="column">
+            <h2 style="text-align:center;">Видеопоток с дрона</h2>
+            <img src="http://localhost:8080/stream?topic=/web_server/map_mission" alt="Видеопоток">
+        </div>
     </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const cordsEl = document.getElementById('cords');
+
+        // Обновление координат врезок каждые 2 секунды
+        function updateCords() {
+            fetch('/api/get_insets_cords')
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const text = data.map((tube, i) => 
+                            `Врезка ${i+1}:\n  X: ${tube[0].toFixed(2)}, Y: ${tube[1].toFixed(2)}`
+                        ).join('\n\n');
+                        cordsEl.textContent = text;
+                    } else {
+                        cordsEl.textContent = "Врезки не обнаружены";
+                    }
+                })
+                .catch(err => {
+                    cordsEl.textContent = "Ошибка связи с сервером";
+                    console.error(err);
+                });
+        }
+
+        // Управление кнопками
+        document.getElementById('start').onclick = () => {
+            fetch('/api/start')
+                .then(r => r.json())
+                .then(res => {
+                    if (res.status === "ok") {
+                        statusEl.textContent = "Миссия запущена";
+                        statusEl.style.color = "#27ae60";
+                    } else {
+                        alert("Ошибка: " + res.message);
+                    }
+                });
+        };
+
+        document.getElementById('stop').onclick = () => {
+            fetch('/api/stop')
+                .then(r => r.json())
+                .then(res => {
+                    if (res.status === "ok") {
+                        statusEl.textContent = "Миссия остановлена";
+                        statusEl.style.color = "#e67e22";
+                    }
+                });
+        };
+
+        document.getElementById('kill').onclick = () => {
+            // if (!confirm("ВЫ УВЕРЕНЫ? Это немедленно разоружит дрон и посадит его!")) return;
+
+            fetch('/api/killswitch')
+                .then(r => r.json())
+                .then(res => {
+                    statusEl.textContent = "АВАРИЙНАЯ ОСТАНОВКА!";
+                    statusEl.style.color = "#c0392b";
+                    alert("Дрон разоружён и посажен");
+                });
+        };
+
+        // Обновляем координаты каждые 2 секунды + сразу при загрузке
+        updateCords();
+        setInterval(updateCords, 2000);
+    </script>
 </body>
 </html>
