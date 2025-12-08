@@ -88,7 +88,7 @@ python3 random_gen.py
 - [campoint2globalcord.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/campoint2globalcord.py "campoint2globalcord.py") - этот код переводит координаты точки пересечения на картинке в глобальные координаты
 - [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/main.py "main.py") - основной код полёта, в нём как раз используются все выше написанные скрипты
 
-В связи с тем, что в `main.py` коды `compute_vision`, `campoint2globalcord` и `flight_api` подцепляются как библиотеки, мы можем запустить только mission.py, не запуская остальные скрипты. Нет смысла запускать `main.py` вручную, т.к. при запуске веб-сервера при нажатии на кнопку `start` всё само полетит.
+В связи с тем, что в `main.py` коды `compute_vision`, `campoint2globalcord` и `flight_api` подцепляются как библиотеки, мы можем запустить только mission.py, не запуская остальные скрипты. Нет смысла запускать `main.py` вручную, т.к. при запуске веб-сервера при нажатии на кнопку `запустить миссию` всё само полетит.
 
 
 Вкратце о работе всего этого:
@@ -104,10 +104,12 @@ python3 random_gen.py
 Веб-сервис позволяет нам легко контролировать полёт дрона и отслеживать найденные врезки в удобном графическом интерфейсе.
 
 Для работы веб-сервиса необходимо запустить [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/server/main.py "main.py"), который работает в многопоточном режиме. В первом потоке он запускает ROS-ноду, во втором потоке - веб сервер.
-При нажатии на кнопку `start` веб сервер отдельным процессом запускает код полёта [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/main.py "main.py"), при нажатии на `stop` -  веб сервер "убивает" процесс миссии по PID процесса.
+При нажатии на кнопку `запустить миссию` веб сервер отдельным процессом запускает код полёта [main.py](https://github.com/andreyalpetrov/NTO-Kvadrokotiki-Second-Coming/blob/main/mission/main.py "main.py"), при нажатии на `остановить миссию` -  веб сервер "убивает" процесс миссии по PID процесса.
 
 Для запуска `main.py` в папке `server` откройте терминал и введите:
 ```Bash
 cd ~/Desktop/NTO-Kvadrokotiki-Second-Coming
 python3 ./server/main.py
 ```
+
+Далее, для просмотра веб-страницы необходимо перейти в браузере на  `http://localhost:5000/`.
